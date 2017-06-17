@@ -42,6 +42,15 @@ def is_iterable(value):
 ############# WRAPPERS ###################
 
 class ArrayWrapper(object):
+    """
+    ArrayWrapper should be subclassed by any type of array creation classes
+    and the corresponding function should be added to __init__.py.  Any subclass
+    MUST define the following:
+
+    __init__ (see docs below)
+    array (@property - see docs below)
+    __math__(self, operator, other)
+    """
     def __init__(self, *args):
         """
         all subclasses MUST parse args and send in as tuples via super so that
@@ -306,7 +315,7 @@ class Full(ArrayWrapper):
         elif isinstance(other, Full) or isinstance(other, Zeros) or isinstance(other, Ones):
             if self.shape==other.shape:
                 if isinstance(other, Full):
-                    other_fill_value = self.fill_value
+                    other_fill_value = other,fill_value
                 elif isinstance(other, Zeros):
                     other_fill_value = 0.0
                 elif isinstance(other, Ones):
@@ -339,14 +348,14 @@ class Zeros(ArrayWrapper):
 
     def __math__(self, operator, other):
         if isinstance(other, float) or isinstance(other, int):
-            return Full(self.shape, getattr(self.fill_value, operator)(other))
+            return Full(self.shape, getattr(0.0, operator)(other))
         elif isinstance(other, np.ndarray) or isinstance(other, list) or isinstance(other, tuple):
             value = getattr(self.array, operator)(other)
             return Array(value)
         elif isinstance(other, Full) or isinstance(other, Zeros) or isinstance(other, Ones):
             if self.shape==other.shape:
                 if isinstance(other, Full):
-                    other_fill_value = self.fill_value
+                    other_fill_value = other.fill_value
                 elif isinstance(other, Zeros):
                     other_fill_value = 0.0
                 elif isinstance(other, Ones):
@@ -378,14 +387,14 @@ class Ones(ArrayWrapper):
 
     def __math__(self, operator, other):
         if isinstance(other, float) or isinstance(other, int):
-            return Full(self.shape, getattr(self.fill_value, operator)(other))
+            return Full(self.shape, getattr(1.0, operator)(other))
         elif isinstance(other, np.ndarray) or isinstance(other, list) or isinstance(other, tuple):
             value = getattr(self.array, operator)(other)
             return Array(value)
         elif isinstance(other, Full) or isinstance(other, Zeros) or isinstance(other, Ones):
             if self.shape==other.shape:
                 if isinstance(other, Full):
-                    other_fill_value = self.fill_value
+                    other_fill_value = other.fill_value
                 elif isinstance(other, Zeros):
                     other_fill_value = 0.0
                 elif isinstance(other, Ones):
