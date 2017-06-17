@@ -33,12 +33,27 @@ def full(shape, fill_value):
     """
     return _wrappers.Full(shape, fill_value)
 
+def full_like(a, fill_value):
+    """
+    """
+    return _wrappers.Full(a.shape, fill_value)
+
 def zeros(shape):
     """
     """
     return _wrappers.Zeros(shape)
 
+def zeros_like(a):
+    """
+    """
+    return _wrappers.Zeros(a.shape)
+
 def ones(shape):
     """
     """
     return _wrappers.Ones(shape)
+
+def ones_like(a):
+    """
+    """
+    return _wrappers.Ones(a.shape)
