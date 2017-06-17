@@ -22,6 +22,9 @@ print b
 # <linspace start=0 stop=0.5 num=2, endpoint=True>
 print b*3
 # <linspace start=0, stop=1.5, num=2, endpoint=True>
+b[1] = 99
+print b
+# <array value=[0, 99]>
 ```
 
 nparray currently supports the following with all arguments (except for dtype - see [open issue](https://github.com/kecnry/nparray/issues/8)):
