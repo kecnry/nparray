@@ -1,10 +1,8 @@
 # nparray
 
-Create numpy arrays (via arange, linspace, etc) and manipulate the creation arguments at any time.  The created object acts as a numpy array but only stores the input parameters.
+Create numpy arrays (via arange, linspace, etc) and manipulate the creation arguments at any time.  The created object acts as a numpy array but only stores the input parameters until its value is accessed.
 
-The following snippet should give you a better idea of the purpose of nparray.  Note that under-the-hood are *actual* numpy arrays, but using isinstance or type will currently not recognize the numpy array.
-
-**NOTE**: this is a work-in-progress and currently only supports arange and linspace, but support for more are coming.
+The following snippet should give you a better idea of the purpose of nparray.  Note that under-the-hood are *actual* numpy arrays, meaning passing directly to matplotlib works fine, but using isinstance or type will currently not recognize the numpy array (at least for now - see [this issue](https://github.com/kecnry/nparray/issues/6)).
 
 ```
 import nparray
@@ -23,6 +21,15 @@ b = a.to_linspace()
 print b
 # <linspace start=0 stop=0.5 num=2>
 ```
+
+nparray currently supports the following with all arguments (except for dtype - see [open issue](https://github.com/kecnry/nparray/issues/8)):
+* [arange](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.arange.html#numpy.arange) (convert to linspace)
+* [linspace](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.linspace.html#numpy.linspace) (convert to arange)
+* [logspace](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.logspace.html#numpy.logspace)
+* [geomspace](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.geomspace.html#numpy.geomspace)
+* [full](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.full.html#numpy.full)
+* [zeros](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.zeros.html#numpy.zeros) (convert to full or linspace)
+* [ones](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.ones.html#numpy.ones) (convert to full or linspace)
 
 ## Dependencies
 
