@@ -177,7 +177,7 @@ class Array(ArrayWrapper):
         return np.array(self.value)
 
     def __math__(self, operator, other):
-        return getattr(self,value, operator)(other)
+        return Array(getattr(np.asarray(self.value), operator)(other))
 
 class Arange(ArrayWrapper):
     def __init__(self, start, stop, step):
