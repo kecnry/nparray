@@ -19,17 +19,24 @@ print a[-1]
 # 0.5
 b = a.to_linspace()
 print b
-# <linspace start=0 stop=0.5 num=2>
+# <linspace start=0 stop=0.5 num=2, endpoint=True>
+print b*3
+# <linspace start=0, stop=1.5, num=2, endpoint=True>
 ```
 
 nparray currently supports the following with all arguments (except for dtype - see [open issue](https://github.com/kecnry/nparray/issues/8)):
-* [arange](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.arange.html#numpy.arange) (convert to linspace)
-* [linspace](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.linspace.html#numpy.linspace) (convert to arange)
-* [logspace](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.logspace.html#numpy.logspace)
-* [geomspace](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.geomspace.html#numpy.geomspace)
-* [full](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.full.html#numpy.full)
-* [zeros](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.zeros.html#numpy.zeros) (convert to full or linspace)
-* [ones](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.ones.html#numpy.ones) (convert to full or linspace)
+* [array](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.array.html#numpy.array)
+* [arange](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.arange.html#numpy.arange) (convert to array, linspace)
+* [linspace](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.linspace.html#numpy.linspace) (convert to array, arange)
+* [logspace](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.logspace.html#numpy.logspace) (convert to array)
+* [geomspace](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.geomspace.html#numpy.geomspace) (convert to array)
+* [full](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.full.html#numpy.full) (convert to array)
+* [full_like](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.full_like.html#numpy.full_like) (creates a full array)
+* [zeros](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.zeros.html#numpy.zeros) (convert to array, full, linspace)
+* [zeros_like](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.zeros_like.html#numpy.zeros_like) (creates a zeros array)
+* [ones](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.ones.html#numpy.ones) (convert to array, full, linspace)
+* [ones_like](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.ones_like.html#numpy.ones_like) (creates a ones array)
+* [eye](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.eye.html#numpy.eye) (convert to array)
 
 ## Dependencies
 
