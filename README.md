@@ -16,7 +16,7 @@ print a[-1]
 # 0.9
 a.step=0.5
 print a
-# <arange start=0 stop=1 step=0.1>
+# <arange start=0 stop=1 step=0.5>
 print a[-1]
 # 0.5
 b = a.to_linspace()
