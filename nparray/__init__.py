@@ -1,14 +1,24 @@
 import nparray as _wrappers
 
+def arange(start, stop, step):
+    """
+    """
+    return _wrappers.Arange(start, stop, step)
+
 def linspace(start, stop, num, endpoint=True):
     """
     """
     return _wrappers.Linspace(start, stop, num, endpoint)
 
-def arange(start, stop, step):
+def logspace(start, stop, num, endpoint=True, base=10.0):
     """
     """
-    return _wrappers.Arange(start, stop, step)
+    return _wrappers.Logspace(start, stop, num, endpoint, base)
+
+def geomspace(start, stop, num, endpoint=True):
+    """
+    """
+    return _wrappers.Geomspace(start, stop, num, endpoint)
 
 def full(shape, fill_value):
     """

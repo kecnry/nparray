@@ -155,6 +155,29 @@ class Linspace(Array):
         arr, step = np.linspace(self.start, self.stop, self.num, self.endpoint)
         return Arange(arr[0], arr[-1], step)
 
+class Logspace(Array):
+    def __init__(self, start, stop, num, endpoint=True, base=10.0):
+        super(Logspace, self).__init__(('start', start, is_float),
+                                       ('stop', stop, is_float),
+                                       ('num', num, is_int_positive),
+                                       ('endpoint', endpoint, is_bool),
+                                       ('base', base, is_float))
+
+    @property
+    def array(self):
+        return np.logspace(self.start, self.stop, self.num, self.endpoint, self.base)
+
+class Geomspace(Array):
+    def __init__(self, start, stop, num, endpoint=True):
+        super(Geomspace, self).__init__(('start', start, is_float),
+                                       ('stop', stop, is_float),
+                                       ('num', num, is_int_positive),
+                                       ('endpoint', endpoint, is_bool))
+
+    @property
+    def array(self):
+        return np.geomspace(self.start, self.stop, self.num, self.endpoint)
+
 class Full(Array):
     def __init__(self, shape, fill_value):
         super(Full, self).__init__(('shape', shape, is_valid_shape),
