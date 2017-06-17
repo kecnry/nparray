@@ -150,6 +150,21 @@ class Linspace(Array):
         step = (self.stop-self.start)/(self.num-1)
         return Arange(self.start, self.stop+step, step)
 
+class Full(Array):
+    def __init__(self, shape, fill_value):
+        super(Full, self).__init__(('shape', shape, is_valid_shape),
+                                    ('fill_value', fill_value, is_float))
+
+    @property
+    def array(self):
+        return np.full(self.shape, self.fill_value)
+
+    def to_linspace(self):
+        if hasattr(self.shape, '__len__'):
+            raise NotImplementedError("can only convert flat Full arrays to linspace")
+        return Linspace(self.fill_value, self.fill_value, self.shape)
+
+
 class Zeros(Array):
     def __init__(self, shape):
         super(Zeros, self).__init__(('shape', shape, is_valid_shape))
@@ -157,6 +172,9 @@ class Zeros(Array):
     @property
     def array(self):
         return np.zeros(self.shape)
+
+    def to_full(self):
+        return Full(self.shape, 0)
 
     def to_linspace(self):
         if hasattr(self.shape, '__len__'):
@@ -170,6 +188,9 @@ class Ones(Array):
     @property
     def array(self):
         return np.ones(self.shape)
+
+    def to_full(self):
+        return Full(self.shape, 1)
 
     def to_linspace(self):
         if hasattr(self.shape, '__len__'):

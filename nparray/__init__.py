@@ -10,6 +10,11 @@ def arange(start, stop, step):
     """
     return _wrappers.Arange(start, stop, step)
 
+def full(shape, fill_value):
+    """
+    """
+    return _wrappers.Full(shape, fill_value)
+
 def zeros(shape):
     """
     """
