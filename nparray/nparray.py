@@ -6,6 +6,10 @@ from collections import OrderedDict
 # these all must accept a single value and return a boolean if it matches the condition
 # the docstring is used as the error message if the test fails
 
+def is_bool(value):
+    """must be boolean"""
+    return isinstance(value, bool)
+
 def is_float(value):
     """must be a float"""
     return isinstance(value, float) or isinstance(value, int)
@@ -134,21 +138,22 @@ class Arange(Array):
         return Linspace(self.start, self.stop-self.step, num)
 
 class Linspace(Array):
-    def __init__(self, start, stop, num):
+    def __init__(self, start, stop, num, endpoint=True):
         super(Linspace, self).__init__(('start', start, is_float),
                                        ('stop', stop, is_float),
-                                       ('num', num, is_int_positive))
+                                       ('num', num, is_int_positive),
+                                       ('endpoint', endpoint, is_bool))
 
     @property
     def array(self):
-        return np.linspace(self.start, self.stop, self.num)
+        return np.linspace(self.start, self.stop, self.num, self.endpoint)
 
     def to_arange(self):
         """
         convert from linspace to arange
         """
-        step = (self.stop-self.start)/(self.num-1)
-        return Arange(self.start, self.stop+step, step)
+        arr, step = np.linspace(self.start, self.stop, self.num, self.endpoint)
+        return Arange(arr[0], arr[-1], step)
 
 class Full(Array):
     def __init__(self, shape, fill_value):

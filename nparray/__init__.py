@@ -1,9 +1,9 @@
 import nparray as _wrappers
 
-def linspace(start, stop, num):
+def linspace(start, stop, num, endpoint=True):
     """
     """
-    return _wrappers.Linspace(start, stop, num)
+    return _wrappers.Linspace(start, stop, num, endpoint)
 
 def arange(start, stop, step):
     """
