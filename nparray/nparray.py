@@ -1,6 +1,13 @@
 import numpy as np
 from collections import OrderedDict
 
+try:
+    from astropy import units
+except ImportError:
+    _has_astropy = False
+else:
+    _has_astropy = True
+
 ################## VALIDATORS ###################
 
 # these all must accept a single value and return a boolean if it matches the condition
@@ -175,7 +182,15 @@ class ArrayWrapper(object):
         return self.__math__('__rsub__', other)
 
     def __mul__(self, other):
-        return self.__math__('__mul__', other)
+        if _has_astropy and (isinstance(other, units.Unit) or
+                             isinstance(other, units.IrreducibleUnit) or
+                             isinstance(other, units.CompositeUnit)):
+            # TODO: consider faking the Quantity object as well so that
+            # quantity.descriptor can be changed on the fly as well
+            # see issue #12
+            return units.Quantity(self, other)
+        else:
+            return self.__math__('__mul__', other)
 
     def __rmul__(self, other):
         return self.__math__('__rmul__', other)
