@@ -92,7 +92,7 @@ class Arange(Array):
 
 class Linspace(Array):
     def __init__(self, start, stop, num):
-        super(Linspace, self).__init__(('start', start), ('stop', stop), ('num', num))
+        super(Linspace, self).__init__(('start', start), ('stop', stop), ('num', int(num)))
 
     @property
     def array(self):
