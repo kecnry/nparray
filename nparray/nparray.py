@@ -104,3 +104,28 @@ class Linspace(Array):
         """
         step = (self.stop-self.start)/(self.num-1)
         return Arange(self.start, self.stop+step, step)
+
+class Zeros(Array):
+    def __init__(self, shape):
+        super(Zeros, self).__init__(('shape', shape))
+
+    @property
+    def array(self):
+        return np.zeros(self.shape)
+
+    def to_linspace(self):
+        if hasattr(self.shape, '__len__'):
+            raise NotImplementedError("can only convert flat Zeros arrays to linspace")
+        return Linspace(0, 0, self.shape)
+
+class Ones(Array):
+    def __init__(self, shape):
+        super(Ones, self).__init__(('shape', shape))
+
+    @property(self):
+        return np.ones(self.shape)
+
+    def to_linspace(self):
+        if hasattr(self.shape, '__len__'):
+            raise NotImplementedError("can only convert flat Ones arrays to linspace")
+        return Linspace(1, 1, self.shape)
