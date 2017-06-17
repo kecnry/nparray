@@ -92,14 +92,14 @@ class ArrayWrapper(object):
         """
         raise NotImplementedError
 
-    @property
-    def __class__(self):
-        """
-        override the class so that isinstance(object, np.ndarray) returns True
-
-        NOTE: this is really hacky
-        """
-        return np.ndarray
+    # @property
+    # def __class__(self):
+    #     """
+    #     override the class so that isinstance(object, np.ndarray) returns True
+    #
+    #     NOTE: this is really hacky
+    #     """
+    #     return np.ndarray
 
     def __getattr__(self, name):
         """
