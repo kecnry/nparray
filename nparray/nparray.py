@@ -120,10 +120,12 @@ class ArrayWrapper(object):
         return self.array.__getitem__(index)
 
     def __setitem__(self, index, value):
-        # TODO: setting an item would ruin the whole concept... but we could
-        # maybe change the object to a plain array or provide a mask that
-        # overrides values?
-        raise NotImplementedError("setting by index not yet implemented")
+        """
+        setting an item in the array needs to fallback on the Array class
+        """
+        arrayvalue = self.array
+        arrayvalue.__setitem__(index, value)
+        self._convert_to_array(arrayvalue)
 
 
     # def __dir__(self):
@@ -185,6 +187,13 @@ class Array(ArrayWrapper):
 
     def __math__(self, operator, other):
         return Array(getattr(np.asarray(self.value), operator)(other))
+
+    def __setitem__(self, index, value):
+        """
+        for Arrays, we simply edit the underlying numpy array/list/tuple
+        """
+        # TODO: will this cause issues if value is a tuple? what is the expected behavior
+        self.value.__setitem__(index, value)
 
 class Arange(ArrayWrapper):
     def __init__(self, start, stop, step):
