@@ -57,3 +57,8 @@ def ones_like(a):
     """
     """
     return _wrappers.Ones(a.shape)
+
+def eye(M, N=None, k=1):
+    """
+    """
+    return _wrappers.Eye(M, N, k)

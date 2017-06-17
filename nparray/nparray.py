@@ -22,6 +22,10 @@ def is_int_positive(value):
     """must be a positive integer"""
     return isinstance(value, int) and value > 0
 
+def is_int_positive_or_none(value):
+    """must be a postive integer or None"""
+    return is_int_positive or value is None
+
 def is_valid_shape(value):
     """must be a positive integer or a tuple/list of positive integers"""
     if is_int_positive(value):
@@ -137,6 +141,9 @@ class ArrayWrapper(object):
         determine eq based on contents of underlying array
         """
         return self.array.__eq__(other.array) if isinstance(other, ArrayWrapper) else self.array.__eq__(other)
+
+    def to_array(self):
+        return Array(self.array)
 
     def _convert_to_array(self, value=None):
         if value is None:
@@ -407,3 +414,16 @@ class Ones(ArrayWrapper):
             return Array(value)
         else:
             raise ValueError("{} not supported with type {}".format(operator, type(other)))
+
+class Eye(ArrayWrapper):
+    def __init__(self, M, N=None, k=0):
+        super(Eye, self).__init__(('M', M, is_int_positive),
+                                  ('N', N, is_int_positive_or_none),
+                                  ('k', k, is_int_positive_or_none))
+
+    @property
+    def array(self):
+        return np.eye(self.M, self.N, self.k)
+
+    def __math__(self, operator, other):
+        return getattr(self.to_array(), operator)(other)
