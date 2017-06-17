@@ -122,7 +122,8 @@ class Ones(Array):
     def __init__(self, shape):
         super(Ones, self).__init__(('shape', shape))
 
-    @property(self):
+    @property
+    def array(self):
         return np.ones(self.shape)
 
     def to_linspace(self):
