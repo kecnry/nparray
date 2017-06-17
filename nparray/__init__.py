@@ -1,5 +1,13 @@
 import nparray as _wrappers
 
+# allow isinstance(obj, nparray.ndarray) to be similar to numpy
+ndarray = _wrappers.ArrayWrapper
+
+def array(value):
+    """
+    """
+    return _wrappers.Array(value)
+
 def arange(start, stop, step):
     """
     """

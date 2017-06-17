@@ -34,10 +34,14 @@ def is_valid_shape(value):
     else:
         return False
 
+def is_iterable(value):
+    """must be an iterable (list, array, tuple)"""
+    return isinstance(value, np.ndarray) or isinstance(value, list) or isinstance(value, tuple)
+
 
 ############# WRAPPERS ###################
 
-class Array(object):
+class ArrayWrapper(object):
     def __init__(self, *args):
         """
         all subclasses MUST parse args and send in as tuples via super so that
@@ -88,8 +92,8 @@ class Array(object):
         """
         """
         # print "*** __setattr__", name, value
-        if name in ['_descriptors', '_validators']:
-            return super(Array, self).__setattr__(name, value)
+        if name in ['_descriptors', '_validators', '__class__']:
+            return super(ArrayWrapper, self).__setattr__(name, value)
         elif name in self._descriptors.keys():
             validator = self._validators[name]
             if validator(value):
@@ -119,8 +123,54 @@ class Array(object):
         descriptors = " ".join(["{}={}".format(k,v) for k,v in self._descriptors.items()])
         return "<{} {}>".format(self.__class__.__name__.lower(), descriptors)
 
+    def __eq__(self, other):
+        """
+        determine eq based on contents of underlying array
+        """
+        return self.array.__eq__(other.array) if isinstance(other, ArrayWrapper) else self.array.__eq__(other)
 
-class Arange(Array):
+    def _convert_to_array(self, value=None):
+        if value is None:
+            value = self.array
+        self.__class__ = Array
+        self.__init__(value)
+
+    def __add__(self, other):
+        return self.__math__('__add__', other)
+
+    def __radd__(self, other):
+        return self.__math__('__radd__', other)
+
+    def __sub__(self, other):
+        return self.__math__('__sub__', other)
+
+    def __rsub__(self, other):
+        return self.__math__('__rsub__', other)
+
+    def __mul__(self, other):
+        return self.__math__('__mul__', other)
+
+    def __rmul__(self, other):
+        return self.__math__('__rmul__', other)
+
+    def __div__(self, other):
+        return self.__math__('__div__', other)
+
+    def __rdiv__(self, other):
+        return self.__math__('__rdiv__', other)
+
+class Array(ArrayWrapper):
+    def __init__(self, value):
+        super(Array, self).__init__(('value', value, is_iterable))
+
+    @property
+    def array(self):
+        return np.array(self.value)
+
+    def __math__(self, operator, other):
+        return getattr(self,value, operator)(other)
+
+class Arange(ArrayWrapper):
     def __init__(self, start, stop, step):
         super(Arange, self).__init__(('start', start, is_float),
                                      ('stop', stop, is_float),
@@ -137,7 +187,25 @@ class Arange(Array):
         num = int((self.stop-self.start)/(self.step))
         return Linspace(self.start, self.stop-self.step, num)
 
-class Linspace(Array):
+    def to_array(self):
+        """
+        convert from arange to array
+        """
+        return Array(self.array)
+
+    def __math__(self, operator, other):
+        if isinstance(other, float) or isinstance(other, int):
+            return Arange(getattr(self.start, operator)(other), getattr(self.stop, operator)(other), self.step)
+        elif isinstance(other, np.ndarray) or isinstance(other, list) or isinstance(other, tuple):
+            value = getattr(self.array, operator)(other)
+            return Array(value)
+        elif isinstance(other, ArrayWrapper):
+            value = getattr(self.array, operator)(other.array)
+            return Array(value)
+        else:
+            raise ValueError("{} not supported with type {}".format(operator, type(other)))
+
+class Linspace(ArrayWrapper):
     def __init__(self, start, stop, num, endpoint=True):
         super(Linspace, self).__init__(('start', start, is_float),
                                        ('stop', stop, is_float),
@@ -152,10 +220,22 @@ class Linspace(Array):
         """
         convert from linspace to arange
         """
-        arr, step = np.linspace(self.start, self.stop, self.num, self.endpoint)
-        return Arange(arr[0], arr[-1], step)
+        arr, step = np.linspace(self.start, self.stop, self.num, self.endpoint, retstep=True)
+        return Arange(self.start, self.stop+step, step)
 
-class Logspace(Array):
+    def __math__(self, operator, other):
+        if isinstance(other, float) or isinstance(other, int):
+            return Linspace(getattr(self.start, operator)(other), getattr(self.stop, operator)(other), self.num)
+        elif isinstance(other, np.ndarray) or isinstance(other, list) or isinstance(other, tuple):
+            value = getattr(self.array, operator)(other)
+            return Array(value)
+        elif isinstance(other, ArrayWrapper):
+            value = getattr(self.array, operator)(other.array)
+            return Array(value)
+        else:
+            raise ValueError("{} not supported with type {}".format(operator, type(other)))
+
+class Logspace(ArrayWrapper):
     def __init__(self, start, stop, num, endpoint=True, base=10.0):
         super(Logspace, self).__init__(('start', start, is_float),
                                        ('stop', stop, is_float),
@@ -167,7 +247,20 @@ class Logspace(Array):
     def array(self):
         return np.logspace(self.start, self.stop, self.num, self.endpoint, self.base)
 
-class Geomspace(Array):
+    def _math__(self, operator, other):
+        if isinstance(other, float) or isinstance(other, int):
+            return Logspace(getattr(self.start, operator)(other), getattr(self.stop, operator)(other), self.num)
+        elif isinstance(other, np.ndarray) or isinstance(other, list) or isinstance(other, tuple):
+            value = getattr(self.array, operator)(other)
+            return Array(value)
+        elif isinstance(other, ArrayWrapper):
+            value = getattr(self.array, operator)(other.array)
+            return Array(value)
+        else:
+            raise ValueError("{} not supported with type {}".format(operator, type(other)))
+
+
+class Geomspace(ArrayWrapper):
     def __init__(self, start, stop, num, endpoint=True):
         super(Geomspace, self).__init__(('start', start, is_float),
                                        ('stop', stop, is_float),
@@ -178,7 +271,19 @@ class Geomspace(Array):
     def array(self):
         return np.geomspace(self.start, self.stop, self.num, self.endpoint)
 
-class Full(Array):
+    def __math__(self, operator, other):
+        if isinstance(other, float) or isinstance(other, int):
+            return Geomspace(getattr(self.start, operator)(other), getattr(self.stop, operator)(other), self.num)
+        elif isinstance(other, np.ndarray) or isinstance(other, list) or isinstance(other, tuple):
+            value = getattr(self.array, operator)(other)
+            return Array(value)
+        elif isinstance(other, ArrayWrapper):
+            value = getattr(self.array, operator)(other.array)
+            return Array(value)
+        else:
+            raise ValueError("{} not supported with type {}".format(operator, type(other)))
+
+class Full(ArrayWrapper):
     def __init__(self, shape, fill_value):
         super(Full, self).__init__(('shape', shape, is_valid_shape),
                                     ('fill_value', fill_value, is_float))
@@ -192,8 +297,31 @@ class Full(Array):
             raise NotImplementedError("can only convert flat Full arrays to linspace")
         return Linspace(self.fill_value, self.fill_value, self.shape)
 
+    def __math__(self, operator, other):
+        if isinstance(other, float) or isinstance(other, int):
+            return Full(self.shape, getattr(self.fill_value, operator)(other))
+        elif isinstance(other, np.ndarray) or isinstance(other, list) or isinstance(other, tuple):
+            value = getattr(self.array, operator)(other)
+            return Array(value)
+        elif isinstance(other, Full) or isinstance(other, Zeros) or isinstance(other, Ones):
+            if self.shape==other.shape:
+                if isinstance(other, Full):
+                    other_fill_value = self.fill_value
+                elif isinstance(other, Zeros):
+                    other_fill_value = 0.0
+                elif isinstance(other, Ones):
+                    other_fill_value = 1.0
+                return Full(self.shape, getattr(self.fill_value, operator)(other_fill_value))
+            else:
+                raise ValueError("cannot add with unmatching shapes")
+        elif isinstance(other, ArrayWrapper):
+            value = getattr(self.array, operator)(other.array)
+            return Array(value)
+        else:
+            raise ValueError("{} not supported with type {}".format(operator, type(other)))
 
-class Zeros(Array):
+
+class Zeros(ArrayWrapper):
     def __init__(self, shape):
         super(Zeros, self).__init__(('shape', shape, is_valid_shape))
 
@@ -209,7 +337,30 @@ class Zeros(Array):
             raise NotImplementedError("can only convert flat Zeros arrays to linspace")
         return Linspace(0, 0, self.shape)
 
-class Ones(Array):
+    def __math__(self, operator, other):
+        if isinstance(other, float) or isinstance(other, int):
+            return Full(self.shape, getattr(self.fill_value, operator)(other))
+        elif isinstance(other, np.ndarray) or isinstance(other, list) or isinstance(other, tuple):
+            value = getattr(self.array, operator)(other)
+            return Array(value)
+        elif isinstance(other, Full) or isinstance(other, Zeros) or isinstance(other, Ones):
+            if self.shape==other.shape:
+                if isinstance(other, Full):
+                    other_fill_value = self.fill_value
+                elif isinstance(other, Zeros):
+                    other_fill_value = 0.0
+                elif isinstance(other, Ones):
+                    other_fill_value = 1.0
+                return Full(self.shape, getattr(0.0, operator)(other_fill_value))
+            else:
+                raise ValueError("cannot add with unmatching shapes")
+        elif isinstance(other, ArrayWrapper):
+            value = getattr(self.array, operator)(other.array)
+            return Array(value)
+        else:
+            raise ValueError("{} not supported with type {}".format(operator, type(other)))
+
+class Ones(ArrayWrapper):
     def __init__(self, shape):
         super(Ones, self).__init__(('shape', shape, is_valid_shape))
 
@@ -224,3 +375,26 @@ class Ones(Array):
         if hasattr(self.shape, '__len__'):
             raise NotImplementedError("can only convert flat Ones arrays to linspace")
         return Linspace(1, 1, self.shape)
+
+    def __math__(self, operator, other):
+        if isinstance(other, float) or isinstance(other, int):
+            return Full(self.shape, getattr(self.fill_value, operator)(other))
+        elif isinstance(other, np.ndarray) or isinstance(other, list) or isinstance(other, tuple):
+            value = getattr(self.array, operator)(other)
+            return Array(value)
+        elif isinstance(other, Full) or isinstance(other, Zeros) or isinstance(other, Ones):
+            if self.shape==other.shape:
+                if isinstance(other, Full):
+                    other_fill_value = self.fill_value
+                elif isinstance(other, Zeros):
+                    other_fill_value = 0.0
+                elif isinstance(other, Ones):
+                    other_fill_value = 1.0
+                return Full(self.shape, getattr(1.0, operator)(other_fill_value))
+            else:
+                raise ValueError("cannot add with unmatching shapes")
+        elif isinstance(other, ArrayWrapper):
+            value = getattr(self.array, operator)(other.array)
+            return Array(value)
+        else:
+            raise ValueError("{} not supported with type {}".format(operator, type(other)))
