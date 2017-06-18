@@ -1,5 +1,6 @@
 import numpy as np
 from collections import OrderedDict
+import json
 
 try:
     from astropy import units
@@ -169,6 +170,20 @@ class ArrayWrapper(object):
 
     def copy(self):
         return self.__copy__()
+
+    def to_dict(self):
+        d = dict(self._descriptors)
+        d['nparray'] = self.__class__.__name__.lower()
+        return d
+
+    def to_json(self, **kwargs):
+        return json.dumps(self.to_dict(), **kwargs)
+
+    def to_file(self, filename, **kwargs):
+        f = open(filename, 'w')
+        f.write(self.to_json(**kwargs))
+        f.close()
+        return filename
 
     def to_array(self):
         return Array(self.array)

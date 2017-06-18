@@ -1,4 +1,6 @@
 import nparray as _wrappers
+import json
+import os
 
 # allow isinstance(obj, nparray.ndarray) to be similar to numpy
 ndarray = _wrappers.ArrayWrapper
@@ -62,3 +64,31 @@ def eye(M, N=None, k=1):
     """
     """
     return _wrappers.Eye(M, N, k)
+
+def from_dict(d):
+    """
+    """
+    if not isinstance(d, dict):
+        raise TypeError("argument must be of type dict")
+    if 'nparray' not in d.keys():
+        raise ValueError("input dictionary missing 'nparray' entry")
+
+    classname = d.pop('nparray').title()
+    return getattr(_wrappers, classname)(**d)
+
+def from_json(j):
+    """
+    """
+    if not (isinstance(j, str) or isinstance(j, unicode)):
+        raise TypeError("argument must be of type str")
+
+    return from_dict(json.loads(j))
+
+def from_file(filename):
+    """
+    """
+    f = open(filename, 'r')
+    j = json.load(f)
+    f.close()
+
+    return from_dict(j)
