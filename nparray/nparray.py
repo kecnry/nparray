@@ -172,7 +172,12 @@ class ArrayWrapper(object):
         return self.__copy__()
 
     def to_dict(self):
-        d = dict(self._descriptors)
+        def _json_safe(v):
+            if isinstance(v, np.ndarray):
+                return v.tolist()
+            else:
+                return v
+        d = {k:_json_safe(v) for k,v in self._descriptors.items()}
         d['nparray'] = self.__class__.__name__.lower()
         return d
 
