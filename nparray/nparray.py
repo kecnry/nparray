@@ -158,8 +158,8 @@ class ArrayWrapper(object):
         descriptors = " ".join(["{}={}".format(k,v) for k,v in self._descriptors.items()])
         return "<{} {}>".format(self.__class__.__name__.lower(), descriptors)
 
-    def __str__(self):
-        return self.array.__str__()
+    # def __str__(self):
+    #     return self.array.__str__()
 
     def __copy__(self):
         return self.__class__(**self._descriptors)
