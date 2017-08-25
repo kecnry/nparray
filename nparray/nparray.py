@@ -12,7 +12,7 @@ else:
 ################## VALIDATORS ###################
 
 # these all must accept a single value and return a boolean if it matches the condition
-# the docstring is used as the error message if the test fails
+# NOTE: the docstring is used as the error message if the test fails
 
 def is_bool(value):
     """must be boolean"""
@@ -106,16 +106,12 @@ class ArrayWrapper(object):
         """
         for anything that isn't overriden here, call the method on the array itself
         """
-        # print "*** __getattr__", name
         if name in ['_descriptors', '_validators']:
             # then we need to actually get the attribute
             return super(ArrayWrapper, self).__getattr__(name)
-            # return self._descriptors
         elif name in self._descriptors.keys():
             # then get the item in the dictionary
             return self._descriptors.get(name)
-        # elif hasattr(self, name):
-            # return super(ArrayWrapper, self).__getattr__(name)
         elif hasattr(self.array, name):
             # then fallback on the underlying array object
             return getattr(self.array, name)
@@ -125,7 +121,6 @@ class ArrayWrapper(object):
     def __setattr__(self, name, value):
         """
         """
-        # print "*** __setattr__", name, value
         if name in ['_descriptors', '_validators', '__class__']:
             return super(ArrayWrapper, self).__setattr__(name, value)
         elif name in self._descriptors.keys():
@@ -159,9 +154,6 @@ class ArrayWrapper(object):
         descriptors = " ".join(["{}={}".format(k,v) for k,v in self._descriptors.items()])
         return "<{} {}>".format(self.__class__.__name__.lower(), descriptors)
 
-    # def __str__(self):
-    #     return self.array.__str__()
-
     def __copy__(self):
         return self.__class__(**self._descriptors)
 
@@ -172,6 +164,11 @@ class ArrayWrapper(object):
         return self.__copy__()
 
     def to_dict(self):
+        """
+        dump a representation of the nparray object to a dictionary.  The
+        nparray object should then be able to be fully restored via
+        nparray.from_dict
+        """
         def _json_safe(v):
             if isinstance(v, np.ndarray):
                 return v.tolist()
@@ -182,15 +179,34 @@ class ArrayWrapper(object):
         return d
 
     def to_json(self, **kwargs):
+        """
+        dump a representation of the nparray object to a json-formatted string.
+        The nparray object should then be able to be fully restored via
+        nparray.from_json
+        """
         return json.dumps(self.to_dict(), **kwargs)
 
     def to_file(self, filename, **kwargs):
+        """
+        dump a representation of the nparray object to a json-formatted file.
+        The nparray object should then be able to be fully restored via
+        nparray.from_file
+
+        @parameter str filename: path to the file to be created (will overwrite
+            if already exists)
+        @rtype: str
+        @returns: the filename
+        """
         f = open(filename, 'w')
         f.write(self.to_json(**kwargs))
         f.close()
         return filename
 
     def to_array(self):
+        """
+        convert to an nparray array object (note: not a numpy array, to access
+        the underlying numpy object, call the .array property)
+        """
         return Array(self.array)
 
     def _convert_to_array(self, value=None):
@@ -276,6 +292,9 @@ class Array(ArrayWrapper):
 
     @property
     def array(self):
+        """
+        return the underlying numpy array
+        """
         return np.array(self.value)
 
     def __math__(self, operator, other):
@@ -296,6 +315,9 @@ class Arange(ArrayWrapper):
 
     @property
     def array(self):
+        """
+        return the underlying numpy array
+        """
         return np.arange(self.start, self.stop, self.step)
 
     def to_linspace(self):
@@ -332,6 +354,9 @@ class Linspace(ArrayWrapper):
 
     @property
     def array(self):
+        """
+        return the underlying numpy array
+        """
         return np.linspace(self.start, self.stop, self.num, self.endpoint)
 
     def to_arange(self):
@@ -363,6 +388,9 @@ class Logspace(ArrayWrapper):
 
     @property
     def array(self):
+        """
+        return the underlying numpy array
+        """
         return np.logspace(self.start, self.stop, self.num, self.endpoint, self.base)
 
     def _math__(self, operator, other):
@@ -387,6 +415,9 @@ class Geomspace(ArrayWrapper):
 
     @property
     def array(self):
+        """
+        return the underlying numpy array
+        """
         return np.geomspace(self.start, self.stop, self.num, self.endpoint)
 
     def __math__(self, operator, other):
@@ -408,9 +439,15 @@ class Full(ArrayWrapper):
 
     @property
     def array(self):
+        """
+        return the underlying numpy array
+        """
         return np.full(self.shape, self.fill_value)
 
     def to_linspace(self):
+        """
+        convert from full to linspace
+        """
         if hasattr(self.shape, '__len__'):
             raise NotImplementedError("can only convert flat Full arrays to linspace")
         return Linspace(self.fill_value, self.fill_value, self.shape)
@@ -445,12 +482,21 @@ class Zeros(ArrayWrapper):
 
     @property
     def array(self):
+        """
+        return the underlying numpy array
+        """
         return np.zeros(self.shape)
 
     def to_full(self):
+        """
+        convert from zeros to full
+        """
         return Full(self.shape, 0)
 
     def to_linspace(self):
+        """
+        convert from zeros to linspace
+        """
         if hasattr(self.shape, '__len__'):
             raise NotImplementedError("can only convert flat Zeros arrays to linspace")
         return Linspace(0, 0, self.shape)
@@ -484,12 +530,21 @@ class Ones(ArrayWrapper):
 
     @property
     def array(self):
+        """
+        return the underlying numpy array
+        """
         return np.ones(self.shape)
 
     def to_full(self):
+        """
+        convert from ones to full
+        """
         return Full(self.shape, 1)
 
     def to_linspace(self):
+        """
+        convert from ones to linspace
+        """
         if hasattr(self.shape, '__len__'):
             raise NotImplementedError("can only convert flat Ones arrays to linspace")
         return Linspace(1, 1, self.shape)
@@ -525,6 +580,9 @@ class Eye(ArrayWrapper):
 
     @property
     def array(self):
+        """
+        return the underlying numpy array
+        """
         return np.eye(self.M, self.N, self.k)
 
     def __math__(self, operator, other):
