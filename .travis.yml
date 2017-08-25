@@ -1,6 +1,6 @@
-# https://travis-ci.org/phoebe-project/phoebe2
+# https://travis-ci.org/kecnry/nparray
 
-language: none
+language: python
 
 addons:
   apt:
