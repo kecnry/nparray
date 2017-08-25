@@ -44,10 +44,10 @@ matrix:
 
         # Try with dev version of numpy (only with python 3.6)
         - os: linux
-          env: PYTHON_VERSION=3.6 NUMPY_VERSION=stable ASTROPY_VERSION=stable'
+          env: PYTHON_VERSION=3.6 NUMPY_VERSION=dev ASTROPY_VERSION=stable'
 
         - os: osx
-          env: PYTHON_VERSION=3.6 NUMPY_VERSION=stable ASTROPY_VERSION=stable'
+          env: PYTHON_VERSION=3.6 NUMPY_VERSION=dev ASTROPY_VERSION=stable'
 
     allow_failures:
       - env: NUMPY_VERSION=dev
