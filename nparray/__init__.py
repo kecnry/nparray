@@ -1,4 +1,4 @@
-import nparray as _wrappers
+from . import nparray as _wrappers
 import numpy as np
 import json
 import os
