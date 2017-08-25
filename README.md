@@ -5,9 +5,9 @@ Create numpy arrays (via arange, linspace, etc) and manipulate the creation argu
 The following snippet should give you a better idea of the purpose of nparray.  Note that under-the-hood are *actual* numpy arrays, meaning passing directly to matplotlib works fine, but using isinstance or type will currently not recognize the numpy array (at least for now - see [this issue](https://github.com/kecnry/nparray/issues/6)).
 
 ```
-import nparray
+import nparray as npa
 
-a = nparray.arange(0,1,0.1)
+a = npa.arange(0,1,0.1)
 print a
 # <arange start=0 stop=1 step=0.1>
 print a[-1]

@@ -1,7 +1,7 @@
-import nparray
+import nparray as npa
 
-a = nparray.linspace(0,1,10,False)
-b = nparray.arange(0,1,0.1)
+a = npa.linspace(0,1,10,False)
+b = npa.arange(0,1,0.1)
 
 print a, a.array
 print b, b.array

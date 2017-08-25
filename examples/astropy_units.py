@@ -1,7 +1,7 @@
-import nparray
+import nparray as npa
 import astropy.units as u
 
-a = nparray.linspace(0,1,11)
+a = npa.linspace(0,1,11)
 
 q = a * u.m
 

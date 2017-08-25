@@ -1,8 +1,8 @@
-import nparray
+import nparray as npa
 
-a = nparray.linspace(0,1,11)
-b = nparray.linspace(5,10,11).to_arange()
-c = nparray.zeros(11)
+a = npa.linspace(0,1,11)
+b = npa.linspace(5,10,11).to_arange()
+c = npa.zeros(11)
 
 # when possible, math on nparrays will attempt to return a smart nparray.  Otherwise
 # it will return an Array object which only stores the underlying array itself
