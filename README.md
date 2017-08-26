@@ -46,7 +46,7 @@ nparray currently supports the following with all arguments (except for dtype - 
 * [numpy](https://github.com/numpy/numpy)
 * collections (should be standard python module)
 
-nparray is currently tested on linux and osx with Python 2.7 and 3.6 and numpy 1.10+.  See the [travis report](https://travis-ci.org/kecnry/nparray) for details on the full testing-matrix.
+nparray is currently tested on linux with Python 2.7 and 3.6 and numpy 1.10+.  See the [travis report](https://travis-ci.org/kecnry/nparray) for details on the full testing-matrix.
 
 ## Installation
 
