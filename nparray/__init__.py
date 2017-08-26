@@ -3,7 +3,7 @@ import numpy as np
 import json
 import os
 
-from distutils.version import StrictVersion
+from distutils.version import LooseVersion
 
 # allow isinstance(obj, nparray.ndarray) to be similar to numpy
 ndarray = _wrappers.ArrayWrapper
@@ -47,7 +47,7 @@ logspace.__doc__ = __docprefix__ + np.logspace.__doc__
 
 def geomspace(start, stop, num, endpoint=True):
     # docstring intentionally left blank, as it is overridden below
-    if StrictVersion(np.__version__) >- StrictVersion("1.13"):
+    if LooseVersion(np.__version__) >= LooseVersion("1.13"):
         return _wrappers.Geomspace(start, stop, num, endpoint)
     else:
         raise NotImplementedError("geomspace requires numpy version >= 1.13")
