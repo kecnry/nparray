@@ -52,7 +52,7 @@ def geomspace(start, stop, num, endpoint=True):
     else:
         raise NotImplementedError("geomspace requires numpy version >= 1.13")
 
-if StrictVersion(np.__version__) >= StrictVersion("1.13"):
+if LooseVersion(np.__version__) >= LooseVersion("1.13"):
     geomspace.__doc__ = __docprefix__ + np.geomspace.__doc__
 
 def full(shape, fill_value):
