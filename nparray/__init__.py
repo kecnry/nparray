@@ -5,6 +5,9 @@ import os
 
 from distutils.version import LooseVersion
 
+__version__ = 'pre-release'
+version = __version__
+
 # allow isinstance(obj, nparray.ndarray) to be similar to numpy
 ndarray = _wrappers.ArrayWrapper
 
