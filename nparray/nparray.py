@@ -143,7 +143,6 @@ class ArrayWrapper(object):
             raise ImportError("astropy must be installed for unit/quantity support")
 
         if self.unit is None:
-            print "**** HERE", self
             raise ValueError("no units currently set")
 
         if not is_unit_or_unitstring(unit):
