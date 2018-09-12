@@ -22,7 +22,7 @@ def test_create_errors():
     assert_raises(ValueError, npa.linspace, 0, 1, 1, 5)
 
     # too many args
-    assert_raises(TypeError, npa.linspace, 0, 1, 1, 1, 1)
+    assert_raises(TypeError, npa.linspace, 0, 1, 1, True, None, 1)
 
 def test_conversions():
     npa_a = npa.linspace(0,1,11)

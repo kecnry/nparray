@@ -14,13 +14,39 @@ else:
 # these all must accept a single value and return a boolean if it matches the condition
 # NOTE: the docstring is used as the error message if the test fails
 
+def is_unit(value):
+    """must be an astropy unit"""
+    if not _has_astropy:
+        raise ImportError("astropy must be installed for unit support")
+    if (isinstance(value, units.Unit) or isinstance(value, units.IrreducibleUnit) or isinstance(value, units.CompositeUnit)):
+        return True
+    else:
+        return False
+
+def is_unit_or_unitstring(value):
+    """must be an astropy.unit"""
+    if is_unit(value):
+        return True
+    try:
+        unit = units.Unit(value)
+    except:
+        return False
+    else:
+        return True
+
+def is_unit_or_unitstring_or_none(value):
+    """must be an astropy unit or None"""
+    if value is None:
+        return True
+    return is_unit_or_unitstring(value)
+
 def is_bool(value):
     """must be boolean"""
     return isinstance(value, bool)
 
 def is_float(value):
     """must be a float"""
-    return isinstance(value, float) or isinstance(value, int)
+    return isinstance(value, float) or isinstance(value, int) or isinstance(value, np.float64)
 
 def is_int(value):
     """must be an integer"""
@@ -82,7 +108,7 @@ class ArrayWrapper(object):
             if item[2](item[1]):
                 self._descriptors[item[0]] = item[1]
             else:
-                raise ValueError("{} {}".format(item[0], item[2].__doc__))
+                raise ValueError("{} {}, got {}".format(item[0], item[2].__doc__, item[1]))
             self._validators[item[0]] = item[2]
 
     @property
@@ -92,6 +118,48 @@ class ArrayWrapper(object):
         np.ndarray object
         """
         raise NotImplementedError
+
+    @property
+    def quantity(self):
+        """
+        return the underlying astropy quantity (if astropy is installed)
+        """
+        if not _has_astropy:
+            raise ImportError("astropy must be installed for unit/quantity support")
+
+        if self.unit is None:
+            raise ValueError("unit is not set, cannot convert to quantity")
+
+        if not is_unit(self.unit):
+            self.unit = units.Unit(self.unit)
+
+        return self.array * self.unit
+
+    def to(self, unit):
+        """
+        convert between units.  Returns a new nparray object with the new units
+        """
+        if not _has_astropy:
+            raise ImportError("astropy must be installed for unit/quantity support")
+
+        if self.unit is None:
+            print "**** HERE", self
+            raise ValueError("no units currently set")
+
+        if not is_unit_or_unitstring(unit):
+            raise ValueError("unit not recognized")
+
+        if not is_unit(unit):
+            # then must be a string
+            unit = units.Unit(unit)
+
+        if not is_unit(self.unit):
+            self.unit = units.Unit(unit)
+
+        mult_factor = self.unit.to(unit)
+        copy = self.copy() * mult_factor
+        copy.unit = unit
+        return copy
 
     # @property
     # def __class__(self):
@@ -228,13 +296,10 @@ class ArrayWrapper(object):
         return self.__math__('__rsub__', other)
 
     def __mul__(self, other):
-        if _has_astropy and (isinstance(other, units.Unit) or
-                             isinstance(other, units.IrreducibleUnit) or
-                             isinstance(other, units.CompositeUnit)):
-            # TODO: consider faking the Quantity object as well so that
-            # quantity.descriptor can be changed on the fly as well
-            # see issue #12
-            return units.Quantity(self, other)
+        if _has_astropy and is_unit(other):
+            copy = self.copy()
+            copy.unit = other
+            return copy
         else:
             return self.__math__('__mul__', other)
 
@@ -287,8 +352,8 @@ class ArrayWrapper(object):
         return self.__comparison__('__contains__', other)
 
 class Array(ArrayWrapper):
-    def __init__(self, value):
-        super(Array, self).__init__(('value', value, is_iterable))
+    def __init__(self, value, unit=None):
+        super(Array, self).__init__(('value', value, is_iterable), ('unit', unit, is_unit_or_unitstring_or_none))
 
     @property
     def array(self):
@@ -298,7 +363,8 @@ class Array(ArrayWrapper):
         return np.array(self.value)
 
     def __math__(self, operator, other):
-        return Array(getattr(np.asarray(self.value), operator)(other))
+        value = getattr(np.asarray(self.value), operator)(other)
+        return Array(value, self.unit)
 
     def __setitem__(self, index, value):
         """
@@ -308,10 +374,11 @@ class Array(ArrayWrapper):
         self.value.__setitem__(index, value)
 
 class Arange(ArrayWrapper):
-    def __init__(self, start, stop, step):
+    def __init__(self, start, stop, step, unit=None):
         super(Arange, self).__init__(('start', start, is_float),
                                      ('stop', stop, is_float),
-                                     ('step', step, is_float))
+                                     ('step', step, is_float),
+                                     ('unit', unit, is_unit_or_unitstring_or_none))
 
     @property
     def array(self):
@@ -335,22 +402,28 @@ class Arange(ArrayWrapper):
 
     def __math__(self, operator, other):
         if isinstance(other, float) or isinstance(other, int):
-            return Arange(getattr(self.start, operator)(other), getattr(self.stop, operator)(other), self.step)
+            # NOTE: we have to cast the start and stop to a float because
+            # int.__mul__(float) is not implemented in Python (instead it uses
+            # float.__rmul__(int)).
+            # Alternatively,we could check for this case and do
+            # other.__r{operator}(self.start) but that seems just as ugly.
+            return Arange(getattr(float(self.start), operator)(other), getattr(float(self.stop), operator)(other), self.step, self.unit)
         elif isinstance(other, np.ndarray) or isinstance(other, list) or isinstance(other, tuple):
             value = getattr(self.array, operator)(other)
-            return Array(value)
+            return Array(value, self.unit)
         elif isinstance(other, ArrayWrapper):
             value = getattr(self.array, operator)(other.array)
-            return Array(value)
+            return Array(value, self.unit)
         else:
             raise ValueError("{} not supported with type {}".format(operator, type(other)))
 
 class Linspace(ArrayWrapper):
-    def __init__(self, start, stop, num, endpoint=True):
+    def __init__(self, start, stop, num, endpoint=True, unit=None):
         super(Linspace, self).__init__(('start', start, is_float),
                                        ('stop', stop, is_float),
                                        ('num', num, is_int_positive),
-                                       ('endpoint', endpoint, is_bool))
+                                       ('endpoint', endpoint, is_bool),
+                                       ('unit', unit, is_unit_or_unitstring_or_none))
 
     @property
     def array(self):
@@ -368,23 +441,29 @@ class Linspace(ArrayWrapper):
 
     def __math__(self, operator, other):
         if isinstance(other, float) or isinstance(other, int):
-            return Linspace(getattr(self.start, operator)(other), getattr(self.stop, operator)(other), self.num)
+            # NOTE: we have to cast the start and stop to a float because
+            # int.__mul__(float) is not implemented in Python (instead it uses
+            # float.__rmul__(int)).
+            # Alternatively,we could check for this case and do
+            # other.__r{operator}(self.start) but that seems just as ugly.
+            return Linspace(getattr(float(self.start), operator)(other), getattr(float(self.stop), operator)(other), self.num, self.endpoint, self.unit)
         elif isinstance(other, np.ndarray) or isinstance(other, list) or isinstance(other, tuple):
             value = getattr(self.array, operator)(other)
-            return Array(value)
+            return Array(value, self.unit)
         elif isinstance(other, ArrayWrapper):
             value = getattr(self.array, operator)(other.array)
-            return Array(value)
+            return Array(value, self.unit)
         else:
             raise ValueError("{} not supported with type {}".format(operator, type(other)))
 
 class Logspace(ArrayWrapper):
-    def __init__(self, start, stop, num, endpoint=True, base=10.0):
+    def __init__(self, start, stop, num, endpoint=True, base=10.0, unit=None):
         super(Logspace, self).__init__(('start', start, is_float),
                                        ('stop', stop, is_float),
                                        ('num', num, is_int_positive),
                                        ('endpoint', endpoint, is_bool),
-                                       ('base', base, is_float))
+                                       ('base', base, is_float),
+                                       ('unit', unit, is_unit_or_unitstring_or_none))
 
     @property
     def array(self):
@@ -395,23 +474,24 @@ class Logspace(ArrayWrapper):
 
     def _math__(self, operator, other):
         if isinstance(other, float) or isinstance(other, int):
-            return Logspace(getattr(self.start, operator)(other), getattr(self.stop, operator)(other), self.num)
+            return Logspace(getattr(self.start, operator)(other), getattr(self.stop, operator)(other), self.num, self.unit)
         elif isinstance(other, np.ndarray) or isinstance(other, list) or isinstance(other, tuple):
             value = getattr(self.array, operator)(other)
-            return Array(value)
+            return Array(value, self.unit)
         elif isinstance(other, ArrayWrapper):
             value = getattr(self.array, operator)(other.array)
-            return Array(value)
+            return Array(value, self.unit)
         else:
             raise ValueError("{} not supported with type {}".format(operator, type(other)))
 
 
 class Geomspace(ArrayWrapper):
-    def __init__(self, start, stop, num, endpoint=True):
+    def __init__(self, start, stop, num, endpoint=True, unit=None):
         super(Geomspace, self).__init__(('start', start, is_float),
                                        ('stop', stop, is_float),
                                        ('num', num, is_int_positive),
-                                       ('endpoint', endpoint, is_bool))
+                                       ('endpoint', endpoint, is_bool),
+                                       ('unit', unit, is_unit_or_unitstring_or_none))
 
     @property
     def array(self):
@@ -422,20 +502,26 @@ class Geomspace(ArrayWrapper):
 
     def __math__(self, operator, other):
         if isinstance(other, float) or isinstance(other, int):
-            return Geomspace(getattr(self.start, operator)(other), getattr(self.stop, operator)(other), self.num)
+            # NOTE: we have to cast the start and stop to a float because
+            # int.__mul__(float) is not implemented in Python (instead it uses
+            # float.__rmul__(int)).
+            # Alternatively,we could check for this case and do
+            # other.__r{operator}(self.start) but that seems just as ugly.
+            return Geomspace(getattr(float(self.start), operator)(other), getattr(float(self.stop), operator)(other), self.num, self.endpoint, self.unit)
         elif isinstance(other, np.ndarray) or isinstance(other, list) or isinstance(other, tuple):
             value = getattr(self.array, operator)(other)
-            return Array(value)
+            return Array(value, self.unit)
         elif isinstance(other, ArrayWrapper):
             value = getattr(self.array, operator)(other.array)
-            return Array(value)
+            return Array(value, self.unit)
         else:
             raise ValueError("{} not supported with type {}".format(operator, type(other)))
 
 class Full(ArrayWrapper):
-    def __init__(self, shape, fill_value):
+    def __init__(self, shape, fill_value, unit=None):
         super(Full, self).__init__(('shape', shape, is_valid_shape),
-                                    ('fill_value', fill_value, is_float))
+                                    ('fill_value', fill_value, is_float),
+                                    ('unit', unit, is_unit_or_unitstring_or_none))
 
     @property
     def array(self):
@@ -454,10 +540,15 @@ class Full(ArrayWrapper):
 
     def __math__(self, operator, other):
         if isinstance(other, float) or isinstance(other, int):
-            return Full(self.shape, getattr(self.fill_value, operator)(other))
+            # NOTE: we have to cast the fill_value to a float because
+            # int.__mul__(float) is not implemented in Python (instead it uses
+            # float.__rmul__(int)).
+            # Alternatively,we could check for this case and do
+            # other.__r{operator}(self.fill_value) but that seems just as ugly.
+            return Full(self.shape, getattr(float(self.fill_value), operator)(other), self.unit)
         elif isinstance(other, np.ndarray) or isinstance(other, list) or isinstance(other, tuple):
             value = getattr(self.array, operator)(other)
-            return Array(value)
+            return Array(value, self.unit)
         elif isinstance(other, Full) or isinstance(other, Zeros) or isinstance(other, Ones):
             if self.shape==other.shape:
                 if isinstance(other, Full):
@@ -466,19 +557,20 @@ class Full(ArrayWrapper):
                     other_fill_value = 0.0
                 elif isinstance(other, Ones):
                     other_fill_value = 1.0
-                return Full(self.shape, getattr(self.fill_value, operator)(other_fill_value))
+                return Full(self.shape, getattr(self.fill_value, operator)(other_fill_value), self.unit)
             else:
                 raise ValueError("cannot add with unmatching shapes")
         elif isinstance(other, ArrayWrapper):
             value = getattr(self.array, operator)(other.array)
-            return Array(value)
+            return Array(value, self.unit)
         else:
             raise ValueError("{} not supported with type {}".format(operator, type(other)))
 
 
 class Zeros(ArrayWrapper):
-    def __init__(self, shape):
-        super(Zeros, self).__init__(('shape', shape, is_valid_shape))
+    def __init__(self, shape, unit=None):
+        super(Zeros, self).__init__(('shape', shape, is_valid_shape),
+                                    ('unit', unit, is_unit_or_unitstring_or_none))
 
     @property
     def array(self):
@@ -503,10 +595,10 @@ class Zeros(ArrayWrapper):
 
     def __math__(self, operator, other):
         if isinstance(other, float) or isinstance(other, int):
-            return Full(self.shape, getattr(0.0, operator)(other))
+            return Full(self.shape, getattr(0.0, operator)(other), self.unit)
         elif isinstance(other, np.ndarray) or isinstance(other, list) or isinstance(other, tuple):
             value = getattr(self.array, operator)(other)
-            return Array(value)
+            return Array(value, self.unit)
         elif isinstance(other, Full) or isinstance(other, Zeros) or isinstance(other, Ones):
             if self.shape==other.shape:
                 if isinstance(other, Full):
@@ -515,18 +607,19 @@ class Zeros(ArrayWrapper):
                     other_fill_value = 0.0
                 elif isinstance(other, Ones):
                     other_fill_value = 1.0
-                return Full(self.shape, getattr(0.0, operator)(other_fill_value))
+                return Full(self.shape, getattr(0.0, operator)(other_fill_value), self.unit)
             else:
                 raise ValueError("cannot add with unmatching shapes")
         elif isinstance(other, ArrayWrapper):
             value = getattr(self.array, operator)(other.array)
-            return Array(value)
+            return Array(value, self.unit)
         else:
             raise ValueError("{} not supported with type {}".format(operator, type(other)))
 
 class Ones(ArrayWrapper):
-    def __init__(self, shape):
-        super(Ones, self).__init__(('shape', shape, is_valid_shape))
+    def __init__(self, shape, unit=None):
+        super(Ones, self).__init__(('shape', shape, is_valid_shape),
+                                   ('unit', unit, is_unit_or_unitstring_or_none))
 
     @property
     def array(self):
@@ -551,10 +644,10 @@ class Ones(ArrayWrapper):
 
     def __math__(self, operator, other):
         if isinstance(other, float) or isinstance(other, int):
-            return Full(self.shape, getattr(1.0, operator)(other))
+            return Full(self.shape, getattr(1.0, operator)(other), self.unit)
         elif isinstance(other, np.ndarray) or isinstance(other, list) or isinstance(other, tuple):
             value = getattr(self.array, operator)(other)
-            return Array(value)
+            return Array(value, self.unit)
         elif isinstance(other, Full) or isinstance(other, Zeros) or isinstance(other, Ones):
             if self.shape==other.shape:
                 if isinstance(other, Full):
@@ -563,20 +656,21 @@ class Ones(ArrayWrapper):
                     other_fill_value = 0.0
                 elif isinstance(other, Ones):
                     other_fill_value = 1.0
-                return Full(self.shape, getattr(1.0, operator)(other_fill_value))
+                return Full(self.shape, getattr(1.0, operator)(other_fill_value), self.unit)
             else:
                 raise ValueError("cannot add with unmatching shapes")
         elif isinstance(other, ArrayWrapper):
             value = getattr(self.array, operator)(other.array)
-            return Array(value)
+            return Array(value, self.unit)
         else:
             raise ValueError("{} not supported with type {}".format(operator, type(other)))
 
 class Eye(ArrayWrapper):
-    def __init__(self, M, N=None, k=0):
+    def __init__(self, M, N=None, k=0, unit=None):
         super(Eye, self).__init__(('M', M, is_int_positive),
                                   ('N', N, is_int_positive_or_none),
-                                  ('k', k, is_int_positive_or_none))
+                                  ('k', k, is_int_positive_or_none),
+                                  ('unit', unit, is_unit_or_unitstring_or_none))
 
     @property
     def array(self):
@@ -586,4 +680,5 @@ class Eye(ArrayWrapper):
         return np.eye(self.M, self.N, self.k)
 
     def __math__(self, operator, other):
-        return getattr(self.to_array(), operator)(other)
+        value = getattr(self.to_array(), operator)(other)
+        return Array(value, self.unit)
