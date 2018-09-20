@@ -120,6 +120,15 @@ class ArrayWrapper(object):
         raise NotImplementedError
 
     @property
+    def unit(self):
+        """
+        """
+        if not is_unit(self._unit):
+            self._unit = units.Unit(self._unit)
+
+        return self._unit
+
+    @property
     def quantity(self):
         """
         return the underlying astropy quantity (if astropy is installed)
@@ -129,9 +138,6 @@ class ArrayWrapper(object):
 
         if self.unit is None:
             raise ValueError("unit is not set, cannot convert to quantity")
-
-        if not is_unit(self.unit):
-            self.unit = units.Unit(self.unit)
 
         return self.array * self.unit
 
@@ -239,6 +245,8 @@ class ArrayWrapper(object):
         def _json_safe(v):
             if isinstance(v, np.ndarray):
                 return v.tolist()
+            elif is_unit(v):
+                return v.to_string()
             else:
                 return v
         d = {k:_json_safe(v) for k,v in self._descriptors.items()}
