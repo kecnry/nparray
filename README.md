@@ -50,7 +50,13 @@ nparray is currently tested on linux with Python 2.7 and 3.6 and numpy 1.10+.  S
 
 ## Installation
 
-Installation is done using the standard python setup.py commands.
+nparray is available via pip:
+
+```
+pip install nparray
+```
+
+Alternatively, to install from source, use the standard python setup.py commands.
 
 To install globally:
 
