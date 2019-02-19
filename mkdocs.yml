@@ -1,0 +1,22 @@
+site_name: nparray
+theme:
+    name: readthedocs
+    highlightjs: true
+    hljs_languages:
+        - python
+repo_name: GitHub
+repo_url: https://github.com/kecnry/nparray/
+edit_uri: blob/master/docs/
+nav:
+    - Installation & Setup: index.md
+    - API:
+        - nparray: api.md
+        - Array: api/Array.md
+        - Arange: api/Arange.md
+        - Linspace: api/Linspace.md
+        - Logspace: api/Logspace.md
+        - Geomspace: api/Geomspace.md
+        - Full: api/Full.md
+        - Zeros: api/Zeros.md
+        - Ones: api/Ones.md
+        - Eye: api/Eye.md
