@@ -4,7 +4,7 @@
 
 [![GitHub](https://img.shields.io/badge/github-kecnry%2Fnparray-blue.svg)](https://github.com/kecnry/nparray)
 [![License](https://img.shields.io/badge/license-GPL3-blue.svg)](https://github.com/kecnry/nparray/blob/master/LICENSE)
-[![travis build status](https://travis-ci.org/kecnry/array.svg?branch=master)](https://travis-ci.org/kecnry/nparray)
+[![travis build status](https://travis-ci.org/kecnry/nparray.svg?branch=master)](https://travis-ci.org/kecnry/nparray)
 [![Documentation Status](https://readthedocs.org/projects/nparray/badge/?version=latest)](https://nparray.readthedocs.io/en/latest/?badge=latest)
 
 Create numpy arrays (via arange, linspace, etc) and manipulate the creation arguments at any time.  The created object acts as a numpy array but only stores the input parameters until its value is accessed.
