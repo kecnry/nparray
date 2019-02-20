@@ -1,11 +1,12 @@
 # nparray
 
-**High-level Wrappers for Building and Manipulating Numpy Arrays**
+**High-Level Wrappers for Building and Manipulating Numpy Arrays**
 
-[![GitHub](https://img.shields.io/badge/github-kecnry%2Fnparray-blue.svg)](https://github.com/kecnry/nparray)
-[![License](https://img.shields.io/badge/license-GPL3-blue.svg)](https://github.com/kecnry/nparray/blob/master/LICENSE)
-[![travis build status](https://travis-ci.org/kecnry/nparray.svg?branch=master)](https://travis-ci.org/kecnry/nparray)
-[![Documentation Status](https://readthedocs.org/projects/nparray/badge/?version=latest)](https://nparray.readthedocs.io/en/latest/?badge=latest)
+[![badge](https://img.shields.io/badge/github-kecnry%2Fnparray-blue.svg)](https://github.com/kecnry/nparray)
+[![badge](https://img.shields.io/badge/pip-nparray-blue.svg)](https://pypi.org/project/nparray/)
+[![badge](https://img.shields.io/badge/license-GPL3-blue.svg)](https://github.com/kecnry/nparray/blob/master/LICENSE)
+[![badge](https://travis-ci.org/kecnry/nparray.svg?branch=master)](https://travis-ci.org/kecnry/nparray)
+[![badge](https://readthedocs.org/projects/nparray/badge/?version=latest)](https://nparray.readthedocs.io/en/latest/?badge=latest)
 
 Create numpy arrays (via arange, linspace, etc) and manipulate the creation arguments at any time.  The created object acts as a numpy array but only stores the input parameters until its value is accessed.
 
