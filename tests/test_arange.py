@@ -12,7 +12,7 @@ def test_create():
 
 def test_create_errors():
     # passing string
-    assert_raises(ValueError, npa.arange, 0, "1", 1)
+    assert_raises(ValueError, npa.arange, 0, "a", 1)
 
     # not enough args
     assert_raises(TypeError, npa.arange, 0, 1)

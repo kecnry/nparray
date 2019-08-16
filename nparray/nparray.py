@@ -1,6 +1,7 @@
 import numpy as np
 from collections import OrderedDict
 import json
+import sys
 
 try:
     from astropy import units
@@ -8,6 +9,9 @@ except ImportError:
     _has_astropy = False
 else:
     _has_astropy = True
+
+if sys.version_info[0] == 3:
+  unicode = str
 
 ################## VALIDATORS ###################
 
@@ -42,23 +46,51 @@ def is_unit_or_unitstring_or_none(value):
 
 def is_bool(value):
     """must be boolean"""
+    if isinstance(value, str) or isinstance(value, unicode):
+        if value.upper() == 'TRUE':
+            return True, True
+        elif value.upper() == 'FALSE':
+            return True, False
+        else:
+            return False, None
+
     return isinstance(value, bool), value
 
 def is_float(value):
     """must be a float"""
+    if isinstance(value, str) or isinstance(value, unicode):
+        try:
+            value = float(value)
+        except:
+            return False, None
+        else:
+            return True, value
     return isinstance(value, float) or isinstance(value, int) or isinstance(value, np.float64), float(value)
 
 def is_int(value):
     """must be an integer"""
+    if isinstance(value, str) or isinstance(value, unicode):
+        if "." in value:
+            return False, None
+
+        try:
+            value = int(float(value))
+        except:
+            return False, None
+        else:
+            return True, value
     return isinstance(value, int), value
 
 def is_int_positive(value):
     """must be a positive integer"""
-    return isinstance(value, int) and value > 0, value
+    _is_int, value = is_int(value)
+    return _is_int and value > 0, value
 
 def is_int_positive_or_none(value):
     """must be a postive integer or None"""
-    return is_int_positive or value is None, value
+    if value is None:
+        return True, value
+    return is_int_positive(value)
 
 def is_valid_shape(value):
     """must be a positive integer or a tuple/list of positive integers"""
@@ -381,6 +413,9 @@ class ArrayWrapper(object):
         return self.__comparison__('__contains__', other)
 
 class Array(ArrayWrapper):
+    """
+    This is available as a top-level convenience function as <nparray.array>.
+    """
     def __init__(self, value, unit=None):
         """
         This is available as a top-level convenience function as <nparray.array>.
@@ -424,6 +459,9 @@ class Array(ArrayWrapper):
         self.value.__setitem__(index, value)
 
 class Arange(ArrayWrapper):
+    """
+    This is available as a top-level convenience function as <nparray.arange>.
+    """
     def __init__(self, start, stop, step, unit=None):
         """
         This is available as a top-level convenience function as <nparray.arange>.
@@ -506,6 +544,9 @@ class Arange(ArrayWrapper):
             raise ValueError("{} not supported with type {}".format(operator, type(other)))
 
 class Linspace(ArrayWrapper):
+    """
+    This is available as a top-level convenience function as <nparray.linspace>.
+    """
     def __init__(self, start, stop, num, endpoint=True, unit=None):
         """
         This is available as a top-level convenience function as <nparray.linspace>.
@@ -582,6 +623,9 @@ class Linspace(ArrayWrapper):
             raise ValueError("{} not supported with type {}".format(operator, type(other)))
 
 class Logspace(ArrayWrapper):
+    """
+    This is available as a top-level convenience function as <nparray.logspace>.
+    """
     def __init__(self, start, stop, num, endpoint=True, base=10.0, unit=None):
         """
         This is available as a top-level convenience function as <nparray.logspace>.
@@ -642,6 +686,9 @@ class Logspace(ArrayWrapper):
 
 
 class Geomspace(ArrayWrapper):
+    """
+    This is available as a top-level convenience function as <nparray.geomspace>.
+    """
     def __init__(self, start, stop, num, endpoint=True, unit=None):
         """
         This is available as a top-level convenience function as <nparray.geomspace>.
@@ -702,6 +749,10 @@ class Geomspace(ArrayWrapper):
             raise ValueError("{} not supported with type {}".format(operator, type(other)))
 
 class Full(ArrayWrapper):
+    """
+    This is available as a top-level convenience function as <nparray.full> or
+    <nparray.full_like>.
+    """
     def __init__(self, shape, fill_value, unit=None):
         """
         This is available as a top-level convenience function as <nparray.full>
@@ -789,6 +840,10 @@ class Full(ArrayWrapper):
 
 
 class Zeros(ArrayWrapper):
+    """
+    This is available as a top-level convenience function as <nparray.zeros>
+    or <nparray.zeros_like>.
+    """
     def __init__(self, shape, unit=None):
         """
         This is available as a top-level convenience function as <nparray.zeros>
@@ -882,6 +937,10 @@ class Zeros(ArrayWrapper):
             raise ValueError("{} not supported with type {}".format(operator, type(other)))
 
 class Ones(ArrayWrapper):
+    """
+    This is available as a top-level convenience function as <nparray.ones> or
+    <nparray.ones_like>.
+    """
     def __init__(self, shape, unit=None):
         """
         This is available as a top-level convenience function as <nparray.ones>
@@ -975,6 +1034,9 @@ class Ones(ArrayWrapper):
             raise ValueError("{} not supported with type {}".format(operator, type(other)))
 
 class Eye(ArrayWrapper):
+    """
+    This is available as a top-level convenience function as <nparray.eye>.
+    """
     def __init__(self, M, N=None, k=0, unit=None):
         """
         This is available as a top-level convenience function as <nparray.eye>.

@@ -13,7 +13,7 @@ def test_create():
 
 def test_create_errors():
     # passing string
-    assert_raises(ValueError, npa.linspace, 0, "1", 11)
+    assert_raises(ValueError, npa.linspace, 0, "a", 11)
 
     # not enough args
     assert_raises(TypeError, npa.linspace, 0, 1)
