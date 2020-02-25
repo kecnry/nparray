@@ -1,5 +1,6 @@
 import numpy as np
 from collections import OrderedDict
+from copy import deepcopy as _deepcopy
 import json
 import sys
 
@@ -258,6 +259,14 @@ class ArrayWrapper(object):
 
     def __copy__(self):
         return self.__class__(**self._descriptors)
+
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = self.__class__.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            setattr(result, k, _deepcopy(v, memo))
+        return result
 
     def copy(self):
         """
