@@ -259,9 +259,6 @@ class ArrayWrapper(object):
     def __copy__(self):
         return self.__class__(**self._descriptors)
 
-    def __deepcopy__(self):
-        return self.__copy__(self)
-
     def copy(self):
         """
         Create and return a copy.
