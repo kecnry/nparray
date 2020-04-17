@@ -15,6 +15,7 @@ setup(name='nparray',
       url='https://www.github.com/kecnry/nparray',
       download_url = 'https://github.com/kecnry/nparray/tarball/1.1.0',
       packages=['nparray'],
+      install_requires=['numpy>=1.10'],
       classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Science/Research",
