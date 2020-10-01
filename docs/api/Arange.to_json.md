@@ -1,4 +1,4 @@
-### [Arange](Arange.md).to_json (method)
+### [Arange](Arange.md).to_json (function)
 
 
 ```py

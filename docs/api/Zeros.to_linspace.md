@@ -1,4 +1,4 @@
-### [Zeros](Zeros.md).to_linspace (method)
+### [Zeros](Zeros.md).to_linspace (function)
 
 
 ```py

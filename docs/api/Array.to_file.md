@@ -1,4 +1,4 @@
-### [Array](Array.md).to_file (method)
+### [Array](Array.md).to_file (function)
 
 
 ```py

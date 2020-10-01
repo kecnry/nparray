@@ -1,4 +1,4 @@
-### [Linspace](Linspace.md).to_arange (method)
+### [Linspace](Linspace.md).to_arange (function)
 
 
 ```py

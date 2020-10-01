@@ -1,4 +1,4 @@
-### [Array](Array.md).to_json (method)
+### [Array](Array.md).to_json (function)
 
 
 ```py

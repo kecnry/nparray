@@ -1,4 +1,4 @@
-### [Eye](Eye.md).__init__ (method)
+### [Eye](Eye.md).__init__ (function)
 
 
 ```py

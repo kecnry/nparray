@@ -1,4 +1,4 @@
-### [Arange](Arange.md).to (method)
+### [Arange](Arange.md).to (function)
 
 
 ```py

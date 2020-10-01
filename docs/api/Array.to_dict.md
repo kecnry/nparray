@@ -1,4 +1,4 @@
-### [Array](Array.md).to_dict (method)
+### [Array](Array.md).to_dict (function)
 
 
 ```py

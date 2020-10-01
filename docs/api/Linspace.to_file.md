@@ -1,4 +1,4 @@
-### [Linspace](Linspace.md).to_file (method)
+### [Linspace](Linspace.md).to_file (function)
 
 
 ```py

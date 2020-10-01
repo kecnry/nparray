@@ -1,4 +1,4 @@
-### [Eye](Eye.md).to_dict (method)
+### [Eye](Eye.md).to_dict (function)
 
 
 ```py

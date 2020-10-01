@@ -1,4 +1,4 @@
-### [Ones](Ones.md).to_file (method)
+### [Ones](Ones.md).to_file (function)
 
 
 ```py

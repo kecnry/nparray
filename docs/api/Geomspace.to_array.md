@@ -1,4 +1,4 @@
-### [Geomspace](Geomspace.md).to_array (method)
+### [Geomspace](Geomspace.md).to_array (function)
 
 
 ```py

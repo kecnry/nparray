@@ -1,4 +1,4 @@
-### [Full](Full.md).to_array (method)
+### [Full](Full.md).to_array (function)
 
 
 ```py

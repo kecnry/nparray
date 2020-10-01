@@ -1,4 +1,4 @@
-### [Geomspace](Geomspace.md).to_json (method)
+### [Geomspace](Geomspace.md).to_json (function)
 
 
 ```py

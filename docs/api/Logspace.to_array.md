@@ -1,4 +1,4 @@
-### [Logspace](Logspace.md).to_array (method)
+### [Logspace](Logspace.md).to_array (function)
 
 
 ```py

@@ -1,4 +1,4 @@
-### [Ones](Ones.md).to_linspace (method)
+### [Ones](Ones.md).to_linspace (function)
 
 
 ```py

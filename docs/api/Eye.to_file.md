@@ -1,4 +1,4 @@
-### [Eye](Eye.md).to_file (method)
+### [Eye](Eye.md).to_file (function)
 
 
 ```py

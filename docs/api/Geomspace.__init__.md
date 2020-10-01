@@ -1,4 +1,4 @@
-### [Geomspace](Geomspace.md).__init__ (method)
+### [Geomspace](Geomspace.md).__init__ (function)
 
 
 ```py

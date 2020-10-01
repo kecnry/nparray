@@ -1,4 +1,4 @@
-### [Arange](Arange.md).copy (method)
+### [Arange](Arange.md).copy (function)
 
 
 ```py

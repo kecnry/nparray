@@ -1,4 +1,4 @@
-### [Ones](Ones.md).to_array (method)
+### [Ones](Ones.md).to_array (function)
 
 
 ```py

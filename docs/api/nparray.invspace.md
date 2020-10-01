@@ -1,15 +1,23 @@
-### [Linspace](Linspace.md).__init__ (function)
+### [nparray](nparray.md).invspace (function)
 
 
 ```py
 
-def __init__(self, start, stop, num, endpoint=True, unit=None)
+def invspace(start, stop, num, endpoint=True, unit=None)
 
 ```
 
 
 
-This is available as a top-level convenience function as [nparray.linspace](nparray.linspace.md).
+Evenly sampled numbers in inverted space.  This is equivalent to:
+
+```py
+1./linspace(1./start, 1./stop, num, endpoint, unit)
+```
+
+See also:
+
+* [nparray.linspace](nparray.linspace.md)
 
 Arguments
 ------------
@@ -26,5 +34,5 @@ Arguments
 
 Returns
 -----------
-* [Linspace](Linspace.md)
+* [Invspace](Invspace.md)
 

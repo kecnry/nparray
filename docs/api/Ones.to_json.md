@@ -1,4 +1,4 @@
-### [Ones](Ones.md).to_json (method)
+### [Ones](Ones.md).to_json (function)
 
 
 ```py

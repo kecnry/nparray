@@ -1,4 +1,4 @@
-### [Zeros](Zeros.md).to_file (method)
+### [Zeros](Zeros.md).to_file (function)
 
 
 ```py

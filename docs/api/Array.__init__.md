@@ -1,4 +1,4 @@
-### [Array](Array.md).__init__ (method)
+### [Array](Array.md).__init__ (function)
 
 
 ```py

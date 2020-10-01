@@ -1,4 +1,4 @@
-### [Zeros](Zeros.md).to_full (method)
+### [Zeros](Zeros.md).to_full (function)
 
 
 ```py

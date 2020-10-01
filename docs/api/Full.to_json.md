@@ -1,4 +1,4 @@
-### [Full](Full.md).to_json (method)
+### [Full](Full.md).to_json (function)
 
 
 ```py

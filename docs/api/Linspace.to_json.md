@@ -1,4 +1,4 @@
-### [Linspace](Linspace.md).to_json (method)
+### [Linspace](Linspace.md).to_json (function)
 
 
 ```py

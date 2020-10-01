@@ -1,4 +1,4 @@
-### [Zeros](Zeros.md).__init__ (method)
+### [Zeros](Zeros.md).__init__ (function)
 
 
 ```py

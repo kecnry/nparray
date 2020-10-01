@@ -1,4 +1,4 @@
-### [Eye](Eye.md).to_array (method)
+### [Eye](Eye.md).to_array (function)
 
 
 ```py

@@ -1,4 +1,4 @@
-### [Full](Full.md).to_dict (method)
+### [Full](Full.md).to_dict (function)
 
 
 ```py

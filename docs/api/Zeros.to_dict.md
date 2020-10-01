@@ -1,4 +1,4 @@
-### [Zeros](Zeros.md).to_dict (method)
+### [Zeros](Zeros.md).to_dict (function)
 
 
 ```py

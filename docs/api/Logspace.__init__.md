@@ -1,4 +1,4 @@
-### [Logspace](Logspace.md).__init__ (method)
+### [Logspace](Logspace.md).__init__ (function)
 
 
 ```py

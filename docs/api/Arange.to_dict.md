@@ -1,4 +1,4 @@
-### [Arange](Arange.md).to_dict (method)
+### [Arange](Arange.md).to_dict (function)
 
 
 ```py

@@ -1,4 +1,4 @@
-### [Zeros](Zeros.md).to_json (method)
+### [Zeros](Zeros.md).to_json (function)
 
 
 ```py

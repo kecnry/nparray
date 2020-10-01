@@ -1,4 +1,4 @@
-### [Full](Full.md).__init__ (method)
+### [Full](Full.md).__init__ (function)
 
 
 ```py

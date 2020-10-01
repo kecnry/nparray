@@ -1,4 +1,4 @@
-### [Zeros](Zeros.md).copy (method)
+### [Zeros](Zeros.md).copy (function)
 
 
 ```py

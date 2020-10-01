@@ -1,4 +1,4 @@
-### [Linspace](Linspace.md).to_array (method)
+### [Linspace](Linspace.md).to_array (function)
 
 
 ```py

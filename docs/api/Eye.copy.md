@@ -1,4 +1,4 @@
-### [Eye](Eye.md).copy (method)
+### [Eye](Eye.md).copy (function)
 
 
 ```py

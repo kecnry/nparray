@@ -1,4 +1,4 @@
-### [Ones](Ones.md).to (method)
+### [Ones](Ones.md).to (function)
 
 
 ```py

@@ -1,4 +1,4 @@
-### [Ones](Ones.md).__init__ (method)
+### [Ones](Ones.md).__init__ (function)
 
 
 ```py

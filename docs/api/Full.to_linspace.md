@@ -1,4 +1,4 @@
-### [Full](Full.md).to_linspace (method)
+### [Full](Full.md).to_linspace (function)
 
 
 ```py

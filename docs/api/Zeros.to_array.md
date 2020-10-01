@@ -1,4 +1,4 @@
-### [Zeros](Zeros.md).to_array (method)
+### [Zeros](Zeros.md).to_array (function)
 
 
 ```py

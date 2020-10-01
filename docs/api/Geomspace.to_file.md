@@ -1,4 +1,4 @@
-### [Geomspace](Geomspace.md).to_file (method)
+### [Geomspace](Geomspace.md).to_file (function)
 
 
 ```py

@@ -1,4 +1,4 @@
-### [Ones](Ones.md).to_full (method)
+### [Ones](Ones.md).to_full (function)
 
 
 ```py

@@ -1,4 +1,4 @@
-### [Logspace](Logspace.md).to_json (method)
+### [Logspace](Logspace.md).to_json (function)
 
 
 ```py

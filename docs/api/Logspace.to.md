@@ -1,4 +1,4 @@
-### [Logspace](Logspace.md).to (method)
+### [Logspace](Logspace.md).to (function)
 
 
 ```py

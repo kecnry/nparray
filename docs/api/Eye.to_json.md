@@ -1,4 +1,4 @@
-### [Eye](Eye.md).to_json (method)
+### [Eye](Eye.md).to_json (function)
 
 
 ```py

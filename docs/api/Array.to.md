@@ -1,4 +1,4 @@
-### [Array](Array.md).to (method)
+### [Array](Array.md).to (function)
 
 
 ```py

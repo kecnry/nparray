@@ -1,4 +1,4 @@
-### [Array](Array.md).copy (method)
+### [Array](Array.md).copy (function)
 
 
 ```py

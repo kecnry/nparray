@@ -1,4 +1,4 @@
-### [Full](Full.md).to_file (method)
+### [Full](Full.md).to_file (function)
 
 
 ```py

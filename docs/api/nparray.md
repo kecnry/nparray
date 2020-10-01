@@ -9,6 +9,7 @@
 * [full](nparray.full.md)
 * [full_like](nparray.full_like.md)
 * [geomspace](nparray.geomspace.md)
+* [invspace](nparray.invspace.md)
 * [linspace](nparray.linspace.md)
 * [logspace](nparray.logspace.md)
 * [monkeypatch](nparray.monkeypatch.md)

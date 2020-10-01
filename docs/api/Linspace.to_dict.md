@@ -1,4 +1,4 @@
-### [Linspace](Linspace.md).to_dict (method)
+### [Linspace](Linspace.md).to_dict (function)
 
 
 ```py

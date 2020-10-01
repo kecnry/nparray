@@ -66,6 +66,12 @@ Returns
         If True, then the newly created array will use the sub-class
         type of 'a', otherwise it will be a base-class array. Defaults
         to True.
+    shape : int or sequence of ints, optional.
+        Overrides the shape of the result. If order='K' and the number of
+        dimensions is unchanged, will try to keep order, otherwise,
+        order='C' is implied.
+
+        .. versionadded:: 1.17.0
 
     Returns
     -------
@@ -74,11 +80,10 @@ Returns
 
     See Also
     --------
-    zeros_like : Return an array of zeros with shape and type of input.
     empty_like : Return an empty array with shape and type of input.
-    zeros : Return a new array setting values to zero.
+    zeros_like : Return an array of zeros with shape and type of input.
+    full_like : Return a new array with shape of input filled with value.
     ones : Return a new array setting values to one.
-    empty : Return a new uninitialized array.
 
     Examples
     --------
@@ -93,9 +98,9 @@ Returns
 
     &gt;&gt;&gt; y = np.arange(3, dtype=float)
     &gt;&gt;&gt; y
-    array([ 0.,  1.,  2.])
+    array([0., 1., 2.])
     &gt;&gt;&gt; np.ones_like(y)
-    array([ 1.,  1.,  1.])
+    array([1.,  1.,  1.])
 
     
 

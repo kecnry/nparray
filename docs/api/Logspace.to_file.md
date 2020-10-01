@@ -1,4 +1,4 @@
-### [Logspace](Logspace.md).to_file (method)
+### [Logspace](Logspace.md).to_file (function)
 
 
 ```py

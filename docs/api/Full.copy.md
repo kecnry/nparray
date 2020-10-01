@@ -1,4 +1,4 @@
-### [Full](Full.md).copy (method)
+### [Full](Full.md).copy (function)
 
 
 ```py

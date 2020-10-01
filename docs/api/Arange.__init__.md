@@ -1,4 +1,4 @@
-### [Arange](Arange.md).__init__ (method)
+### [Arange](Arange.md).__init__ (function)
 
 
 ```py

@@ -1,4 +1,4 @@
-### [Arange](Arange.md).to_file (method)
+### [Arange](Arange.md).to_file (function)
 
 
 ```py
