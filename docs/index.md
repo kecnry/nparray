@@ -1,4 +1,4 @@
-# nparray
+<p align="center"><a href="http://nparray.readthedocs.io"><img src="./images/nparray.png" alt="nparray logo" width="300px" align="center"/></a></p>
 
 **High-Level Wrappers for Building and Manipulating Numpy Arrays**
 
